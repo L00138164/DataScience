@@ -196,3 +196,25 @@ second_list <- list(a = matrix(1:9, 3), b = 1:7, c = matrix(1:4, 2), d = 2)
 
 swirl::install_course()
 library(swirl)
+
+url <- 'https://www.imdb.com/search/title?release_date=2017-01-01,2017-12-31&count=250'
+
+# Reading the HTML code from the website
+web_page <- read_html(url)
+
+# Quick look at the contents of web_page
+head(web_page)
+
+str(web_page)
+
+# Using HTML tag to scrape the rankings section - IMDB site is 
+# examined for this information first
+rank_data_html <- html_nodes(web_page, '#main > div > div > div.lister-list > div:nth-child(n) > div.lister-item-content > h3 > span.lister-item-index.unbold.text-primary')
+head(rank_data_html, 10)
+length(rank_data_html)
+
+# Converting the ranking data from HTML to text
+rank_data <- html_text(rank_data_html)
+
+# Let's have a look at the rankings data
+head(rank_data, 10)
