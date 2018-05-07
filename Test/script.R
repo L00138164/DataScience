@@ -218,3 +218,46 @@ rank_data <- html_text(rank_data_html)
 
 # Let's have a look at the rankings data
 head(rank_data, 10)
+
+library(swirl)
+install_course_zip("D:/Data Science/swirl_courses-master.zip", multi = TRUE, which_course = "Open Intro")
+swirl()
+
+install.packages("pwr")
+
+library(pwr)
+power_changes <- pwr.p.test(h = ES.h(p1 = 0.75, p2 = 0.5), sig.level = 0.05, power = 0.8, alternative = "greater")
+plot(power_changes)
+
+power_changes <- pwr.p.test(h = ES.h(p1 = 0.75, p2 = 0.5), sig.level = 0.01, power = 0.95, alternative = "greater")
+plot(power_changes)
+
+power_changes <- pwr.p.test(h = ES.h(p1 = 0.75, p2 = 0.5), sig.level = 0.01, power = 0.95)
+plot(power_changes)
+
+power_changes <- pwr.p.test(h = ES.h(p1 = 0.75, p2 = 0.5), sig.level = 0.01, n = 40, alternative = "greater")
+power_changes
+plot(power_changes)
+
+power_changes <- pwr.p.test(h = ES.h(p1 = 0.75, p2 = 0.5), sig.level = 0.01, n = 40)
+power_changes
+plot(power_changes)
+
+power_changes <- pwr.p.test(h = ES.h(p1 = 0.65, p2 = 0.5), sig.level = 0.05, power=0.8)
+power_changes
+plot(power_changes)
+
+#To get the effect size and to use it to test the data
+effect_size <- cohen.ES(test = c("r"), size = c("medium"))
+pwr.r.test(r = effect_size$effect.size, power = 0.8, sig.level = 0.05)
+
+effect_size<-c(0.2,0.5,0.8)
+power_changes <- pwr.p.test(h = effect_size, sig.level = 0.05, n = 20)
+power_changes
+
+power_changes <- pwr.2p.test(h = ES.h(p1 = 0.55, p2 = 0.5), sig.level = 0.05, power = .8)
+plot(power_changes)
+
+power_changes <- pwr.2p.test(h = ES.h(p1 = 0.55, p2 = 0.5), sig.level = 0.05, power = .95)
+power_changes
+plot(power_changes)
