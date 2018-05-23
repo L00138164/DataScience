@@ -261,3 +261,291 @@ plot(power_changes)
 power_changes <- pwr.2p.test(h = ES.h(p1 = 0.55, p2 = 0.5), sig.level = 0.05, power = .95)
 power_changes
 plot(power_changes)
+
+swirl::install_course()
+library(swirl)
+
+
+data(diamonds, package = "ggplot2")
+head(diamonds, 4)
+dim(head(diamonds, 4))
+
+library(magrittr)
+diamonds %>% head(4) %>% dim
+
+x <- c(0.109, .359, .63, .996, .515, .142, .017, .829, .907)
+round(exp(diff(log(x))), 1)
+
+x %>% log %>% diff %>% exp %>% round(1)
+
+install.packages("dplyr")
+library(dplyr)
+diamonds %>% head(5)
+
+head(diamonds)
+
+slice(diamonds, 1:20)
+slice(diamonds, c(1:5, 8, 15:20))
+
+set <- select(diamonds, carat, price)
+mutate(set, ratio = price / carat)
+mutate(set, ratio = price / carat, double = ratio * 2)
+
+diamonds %>% select(carat, price) %>% mutate(ratio = price / carat)
+diamonds %>% select(carat, price) %>% mutate(ratio = price / carat, Double = ratio * 2)
+
+summarise(diamonds, AvgPrice = mean(price),
+                    MedianPrice = median(price),
+                    AvgCarat = mean(carat))
+
+#group by example
+data_grouped <- group_by(diamonds, cut)
+data_summary <- summarise(data_grouped, AvgPrice = mean(price), SumCarat = sum(carat))
+arrange(data_summary, AvgPrice)
+
+#Load the lotto data
+csv_file_list <- list.files(path = "D:/Data Science/Lab/Lotto", pattern = "*.csv")
+my_lotto_data <- NULL
+# Examine the vector
+csv_file_list
+
+
+# Function that reads all csv files into one data frame and returns the result.
+combine_results <- function(file_list) {
+    # Initialise lotto_data variable
+    # Note: it hasn't been assigned a specific variable type eg string 
+    all_lotto_data <- NULL
+
+    for (csv_file in file_list) {
+        # Read each of the csv files in turn and skip the first line of data as it
+        # contains headings within the csv file
+        lotto_file <- read.csv(header = TRUE, paste("D:/Data Science/Lab/Lotto", csv_file, sep = ""), stringsAsFactors = FALSE)
+        # Only select attributes we're interested in
+        # We don't need the first attribute
+        data_of_interest <- lotto_file[1:8]
+        # append vertically to the all_lotto_data data frame
+        all_lotto_data <- rbind(all_lotto_data, data_of_interest)
+    }
+    # Return the concatenated result
+    return(all_lotto_data)
+}
+
+# Call the function and return the result to a data frame
+my_lotto_data <- combine_results(csv_file_list)
+# show the contents of my_lotto_data
+my_lotto_data
+
+#Save the contents of my_lotto_data to a csv file called "ld.csv"
+write.csv(my_lotto_data, file = "ld.csv", quote = FALSE, na = "", row.names = FALSE)
+
+install.packages("hflights")
+library(hflights)
+library(dplyr)
+
+head(hflights)
+str(hflights)
+
+hflights_df <- tbl_df(hflights)
+str(hflights_df)
+
+#To filter the data
+f_df <- filter(hflights_df, Month == "1", UniqueCarrier == "AA" | UniqueCarrier == "UA")
+f_df
+
+#To arrange in descending order
+f_df %>% arrange(desc(Month, DayofMonth, AirTime))
+
+#To select attributes
+f_df %>% select(Year:DayOfWeek, TailNum, ActualElapsedTime)
+
+#To add 2 attributes
+f_df %>% mutate(Gain = ArrDelay - DepDelay,Gain_per_hour = Gain/(AirTime/60))
+
+#To summarise the function
+f_df %>% na.omit(ArrDelay) %>% summarise(Delay = mean(ArrDelay))
+
+Dosage <- c(20, 30, 40, 45, 60)
+Drug_A <- c(16, 20, 27, 40, 60)
+Drug_B <- c(15, 18, 25, 31, 40)
+
+ResponsetodrugA <- Drug_A
+ResponsetodrugB <- Drug_B
+
+drugs <- data.frame(Dosage, ResponsetodrugA, ResponsetodrugB)
+drugs
+plot(drugs)
+
+plot(Dosage, type = "o", col = "blue")
+
+plot(Dosage, Drug_A, type = "b")
+
+#To get two charts on same window
+par(new=TRUE)
+plot(Dosage, Drug_B, type = "b")
+plot(Dosage, Drug_A, type = "b")
+
+opar <- par(no.readonly = TRUE)
+opar <- par(lty = 2, pch = 17)
+plot(Dosage, Drug_A, type = "b")
+par(opar)
+
+plot(Dosage, Drug_A, type = "b", lty = 3, lwd = 3, pch = 15, cex = 2)
+title(main = "Drug Dosage", col.main = "blue", font.main = 4)
+
+plot(Dosage, Drug_A, type = "b", lty = 3, lwd = 3, pch = 15, cex = 2, ylim = c(0, 100))
+title(main = "Drug Dosage", col.main = "blue", font.main = 4)
+lines(Dosage, Drug_B, type = "o", pch = 22, lty = 2, col = "red")
+
+graph_range <- range(0, Drug_A, Drug_B)
+graph_range
+
+plot(Drug_A, ylim = graph_range, axes = FALSE, type = "b", lty = 3, pch = 15, cex = 2, xlab = "millilitres")
+lines(Drug_B, type = "o", pch = 22, lty = 2, col = "red")
+
+axis(1, at = 1:5, lab = c("20ml", "40ml", "60ml", "80ml", "100ml"))
+
+axis(2, las = 1, at = 5 * 0:graph_range[2])
+
+box(which = "plot", lty = "solid")
+
+AIC(linearMod)
+BIC(linearMod)
+
+
+# predict the models 
+# to get random sample
+no_of_records <- sample(1:nrow(cars), 0.8 * nrow(cars))
+
+#model training data
+training_data <- cars[no_of_records,]
+
+#test data
+testing_data <- cars[-no_of_records,]
+
+#Build the model
+lr_model <- lm(dist ~ speed, data = training_data)
+
+#Predict the distance from testing data
+dist_predicted <- predict(lr_model, testing_data)
+
+#Summary
+summary(lr_model)
+
+#make actual_predicteds data frame
+actual_preds <- data.frame(cbind(actuals = testing_data$dist, predicted = dist_predicted))
+head(actual_preds)
+
+#check the correlation accuracy
+correlation_accuracy <- cor(actual_preds)
+correlation_accuracy
+
+#Min-max accuracy
+min_max_accuracy <- mean(apply(actual_preds, 1, min) / apply(actual_preds, 1, max))
+min_max_accuracy
+
+#MAPE
+mape <- mean(abs((actual_preds$predicted - actual_preds$actuals)) / actual_preds$actuals)
+mape
+
+install.packages("DAAG")
+library(DAAG)
+
+cvResults <- suppressWarnings(CVlm(data = cars, form.lm = dist ~ speed, m = 5, dots = FALSE,
+seed = 29, legend.pos = "topleft", printit = FALSE, main = "Small symbols are predicted values while bigger ones are actuals."));
+
+#Closing market price
+ts_data <- EuStockMarkets[, 1]
+opar <- par()
+par(mfrow = c(1, 2))
+
+#Use additive components
+decomposed_result <- decompose(ts_data, type = "mult")
+plot(decomposed_result)
+
+decomposed_result <- decompose(ts_data, type = "additive")
+plot(decomposed_result)
+
+seasonal_trend_error <- stl(ts_data, s.window = "periodic")
+par <- opar
+
+seasonal_trend_error$time.series
+
+lagged_ts <- lag(ts_data, 3)
+
+install.packages("DataCombine")
+library(DataCombine)
+
+my_dataframe <- as.data.frame(ts_data)
+
+my_dataframe <- slide(my_dataframe, "x", NewVar = "xLag1", slideBy = -1)
+
+my_dataframe <- slide(my_dataframe, "x", NewVar = "xLead1", slideBy = -1)
+head(my_dataframe)
+tail(my_dataframe)
+
+acf_res <- acf(AirPassengers)
+
+pacf_res <- pacf(AirPassengers)
+
+plot(JohnsonJohnson)
+trained_model <- lm(JohnsonJohnson ~ c(1:length(JohnsonJohnson)))
+
+plot(resid(trained_model), type = "l")
+
+install.packages("forecast")
+library(forecast)
+
+ts_decompose <- stl(AirPassengers, "periodic")
+
+ts_seasonal_adjust <- seasadj(ts_decompose)
+
+plot(AirPasssengers, type = "l")
+
+plot(ts_seasonal_adjust, type = "l")
+
+seasonplot(ts_seasonal_adjust, 12, col = rainbow(12), year.labels = TRUE, main = "Seasonal plot: AirPassengers")
+
+library(tseries)
+
+adf.test(ts_data)
+
+kpss.test(ts_data)
+
+nsdiffs(AirPassengers)
+
+AirPassengers_seasdiff <- diff(AirPassengers, lag = frequency(AirPassengers), differences = 1)
+
+plot(AirPassengers_seasdiff, type = "l", main = "Seasonally differenced")
+
+
+plot(Nile)
+
+ndiffs(Nile)
+
+d_nile <- diff(Nile)
+plot(d_nile)
+
+ndiffs(d_nile)
+
+adf.test(d_nile)
+
+Acf(d_nile)
+Pacf(d_nile)
+
+fit <- Arima(Nile, order = c(0, 1, 1))
+fit
+
+accuracy(fit)
+
+qqnorm(fit$residuals)
+qqline(fit$residuals)
+
+Box.test(fit$residuals, type = "Ljung-Box")
+
+series_forecast <- forecast(fit, 3)
+plot(series_forecast)
+
+fit <- auto.arima(Nile)
+fit
+
+accuracy(fit)
